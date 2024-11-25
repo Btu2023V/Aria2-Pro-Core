@@ -27,19 +27,24 @@ jobs:
         PLATFORMS: [amd64, arm64, armhf, i386]
         include:
         - PLATFORMS: amd64
-          BUILDER_IMAGE: debian:11
+          BUILDER_IMAGE: debian:12
           BUILD_SCRIPT: aria2-gnu-linux-build-amd64.sh
         - PLATFORMS: arm64
-          BUILDER_IMAGE: debian:11
+          BUILDER_IMAGE: debian:12
           BUILD_SCRIPT: aria2-gnu-linux-cross-build-arm64.sh
         - PLATFORMS: armhf
-          BUILDER_IMAGE: ubuntu:16.04
+          BUILDER_IMAGE: ubuntu:24.04
           BUILD_SCRIPT: aria2-gnu-linux-cross-build-armhf.sh
         - PLATFORMS: i386
           BUILDER_IMAGE: debian:10
           BUILD_SCRIPT: aria2-gnu-linux-cross-build-i386.sh
 
     steps:
+    - name: set variables
+      run: |
+          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+      shell: bash
 
     - name: Install QEMU
       run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
@@ -66,15 +71,26 @@ jobs:
 
     - name: Check Version
       run: |
-        tar xzvf ./output/aria2*.tar.gz
+        tar xzvf ./aria2*.tar.gz
         file aria2c 2>&1 | tee ./output/file-type-${{ matrix.PLATFORMS }}.txt
         ./aria2c -v 2>&1 | tee ./output/version-${{ matrix.PLATFORMS }}.txt
+   
+    - name: Git push assets to "release" branch
+      run: |
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b release
+          git add *.tar.gz
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin release
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: aria2-${{ matrix.PLATFORMS }}
-        path: output
+    - name: Release and upload assets
+      run: |
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./*.tar.gz
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Functional Testing
       run: |
