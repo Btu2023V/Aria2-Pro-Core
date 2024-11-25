@@ -1,0 +1,1 @@
+aria2c: ELF 32-bit LSB executable, ARM, EABI5 version 1 (GNU/Linux), statically linked, BuildID[sha1]=ee6f4add3ac41596d30fc070973047d03a373df3, for GNU/Linux 3.2.0, stripped
