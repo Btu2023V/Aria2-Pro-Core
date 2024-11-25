@@ -72,8 +72,8 @@ jobs:
     - name: Check Version
       run: |
         tar xzvf ./aria2*.tar.gz
-        file aria2c 2>&1 | tee ./output/file-type-${{ matrix.PLATFORMS }}.txt
-        ./aria2c -v 2>&1 | tee ./output/version-${{ matrix.PLATFORMS }}.txt
+        file aria2c 2>&1 | tee ./file-type-${{ matrix.PLATFORMS }}.txt
+        ./aria2c -v 2>&1 | tee ./version-${{ matrix.PLATFORMS }}.txt
    
     - name: Git push assets to "release" branch
       run: |
