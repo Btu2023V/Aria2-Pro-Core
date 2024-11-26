@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 #
 # Copyright (c) 2020 P3TERX <https://p3terx.com>
@@ -70,16 +71,24 @@ source $SCRIPT_DIR/snippet/clean
 ## BUILD PROCESS ##
 TOOLCHAIN
 ZLIB_BUILD
+echo "hqmhqmhqm--------------000"
 EXPAT_BUILD
+echo "hqmhqmhqm--------------666"
 C_ARES_BUILD
+echo "hqmhqmhqm--------------777"
 OPENSSL_BUILD
+echo "hqmhqmhqm--------------888"
 SQLITE3_BUILD
+echo "hqmhqmhqm--------------999"
 LIBSSH2_BUILD
+echo "hqmhqmhqm--------------1000"
 #JEMALLOC_BUILD
 ARIA2_BUILD
+echo "hqmhqmhqm--------------1001"
 #ARIA2_BIN
 ARIA2_PACKAGE
+echo "hqmhqmhqm--------------1002"
 #ARIA2_INSTALL
 CLEANUP_ALL
-
+echo "hqmhqmhqm--------------1003"
 echo "finished!"
